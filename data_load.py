@@ -8,10 +8,8 @@ from torch.utils.data import Dataset
 
 
 class GetData():
-    def __init__(self, path, data_dir=None):
+    def __init__(self, path):
         self.path = path
-        print("Path to dataset files:", path)
-        self.data_dir = data_dir
     
     def get_files(self):
         data_dir = os.path.join(self.path, 'data')
@@ -24,6 +22,10 @@ class GetData():
         else:
             print("Подкаталог 'data' не найден.")
         return data_dir
+    
+    def get_paths(self):
+        data_dir = self.get_files()
+        return self.path, data_dir
 
 class ImageDataset(Dataset):
     def __init__(self, data_dir=None, folder=None, transform=None, images=None, labels=None):
