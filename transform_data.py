@@ -20,9 +20,8 @@ def augment_small_classes(dataset, target_classes, target_size, augmentation_tra
 
     return augmented_images, augmented_labels
 
-def prepare_dataloaders(train_dataset, val_dataset, test_dataset, batch_size, augmentation_transform):
-    target_classes = [0, 1, 2, 4, 5, 6]
-    target_size = 7000
+def prepare_dataloaders(train_dataset, val_dataset, test_dataset, batch_size, augmentation_transform, target_classes, target_size):
+
 
     augmented_images, augmented_labels = augment_small_classes(
         train_dataset, target_classes, target_size, augmentation_transform
@@ -39,9 +38,17 @@ def prepare_dataloaders(train_dataset, val_dataset, test_dataset, batch_size, au
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
+    test_val_transforms = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
     train_aug_dataset = ImageDataset(
         data_dir=None, folder=None, images=all_images, labels=all_labels, transform=train_transforms
     )
+    val_dataset.transform = test_val_transforms
+    test_dataset.transform = test_val_transforms
 
     train_loader = DataLoader(train_aug_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
